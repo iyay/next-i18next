@@ -29,6 +29,7 @@ const config = {
   },
   browserLanguageDetection: true,
   serverLanguageDetection: true,
+  tldLanguageDetection: false,
   ignoreRoutes: ['/_next', '/static'],
   customDetectors: [],
   detection: {

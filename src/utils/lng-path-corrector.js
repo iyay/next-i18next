@@ -36,8 +36,14 @@ const parseHref = originalHref => {
 };
 
 export default (config, currentRoute, currentLanguage) => {
-  const { defaultLanguage, allLanguages, localeSubpaths } = config;
+  const {
+    defaultLanguage,
+    allLanguages,
+    localeSubpaths,
+    tldLanguageDetection
+  } = config;
   const { as: originalAs, href: originalHref } = currentRoute;
+  const tld = getCookie(document.cookie, 'tld');
 
   if (!allLanguages.includes(currentLanguage)) {
     throw new Error(
@@ -63,8 +69,7 @@ export default (config, currentRoute, currentLanguage) => {
     currentLanguage !== defaultLanguage ||
     localeSubpaths === localeSubpathOptions.ALL
   ) {
-    const tld = getCookie(document.cookie, 'tld');
-    if (tld && currentLanguage !== tld) {
+    if (!tldLanguageDetection || (tldLanguageDetection && currentLanguage !== tld)) {
       const basePath = `${href.protocol}//${href.host}`;
       const currentAs = as.replace(basePath, '');
       as = `/${currentLanguage}${currentAs}`;

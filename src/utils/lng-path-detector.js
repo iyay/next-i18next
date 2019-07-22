@@ -10,12 +10,18 @@ export default req => {
 
   if (req.i18n) {
     const language = lngFromReq(req);
-    const { allLanguages, defaultLanguage, localeSubpaths } = req.i18n.options;
+    const {
+      allLanguages,
+      defaultLanguage,
+      localeSubpaths,
+      tldLanguageDetection
+    } = req.i18n.options;
     let languageChanged = false;
     const languageNeedsSubpath =
       (localeSubpaths === localeSubpathOptions.FOREIGN &&
         language !== defaultLanguage) ||
       localeSubpaths === localeSubpathOptions.ALL;
+    const tld = getCookie(req.headers.cookie, 'tld');
 
     /*
       If a user has hit a subpath which does not
@@ -45,8 +51,7 @@ export default req => {
         }
       });
 
-      const tld = getCookie(req.headers.cookie, 'tld');
-      if (tld && currentLanguage !== tld) {
+      if (!tldLanguageDetection || (tldLanguageDetection && language !== tld)) {
         config.correctedUrl = req.url.replace('/', `/${language}/`);
       }
     }
@@ -57,9 +62,10 @@ export default req => {
       set to ALL, strip it.
     */
     if (
-      language === defaultLanguage &&
-      req.url.startsWith(`/${defaultLanguage}/`) &&
-      localeSubpaths !== localeSubpathOptions.ALL
+      (language === defaultLanguage &&
+        req.url.startsWith(`/${defaultLanguage}/`) &&
+        localeSubpaths !== localeSubpathOptions.ALL) ||
+      (tldLanguageDetection && !tld)
     ) {
       config.correctedUrl = req.url.replace(`/${defaultLanguage}/`, '/');
     }

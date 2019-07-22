@@ -36,9 +36,11 @@ var _default = function _default(req) {
     var _req$i18n$options = req.i18n.options,
         allLanguages = _req$i18n$options.allLanguages,
         defaultLanguage = _req$i18n$options.defaultLanguage,
-        localeSubpaths = _req$i18n$options.localeSubpaths;
+        localeSubpaths = _req$i18n$options.localeSubpaths,
+        tldLanguageDetection = _req$i18n$options.tldLanguageDetection;
     var languageChanged = false;
     var languageNeedsSubpath = localeSubpaths === _defaultConfig.localeSubpathOptions.FOREIGN && language !== defaultLanguage || localeSubpaths === _defaultConfig.localeSubpathOptions.ALL;
+    var tld = (0, _cookie["default"])(req.headers.cookie, 'tld');
     /*
       If a user has hit a subpath which does not
       match their language, give preference to
@@ -63,9 +65,8 @@ var _default = function _default(req) {
           config.correctedUrl = req.url.replace("/".concat(otherLng, "/"), '/');
         }
       });
-      var tld = (0, _cookie["default"])(req.headers.cookie, 'tld');
 
-      if (tld && currentLanguage !== tld) {
+      if (!tldLanguageDetection || tldLanguageDetection && language !== tld) {
         config.correctedUrl = req.url.replace('/', "/".concat(language, "/"));
       }
     }
@@ -76,7 +77,7 @@ var _default = function _default(req) {
     */
 
 
-    if (language === defaultLanguage && req.url.startsWith("/".concat(defaultLanguage, "/")) && localeSubpaths !== _defaultConfig.localeSubpathOptions.ALL) {
+    if (language === defaultLanguage && req.url.startsWith("/".concat(defaultLanguage, "/")) && localeSubpaths !== _defaultConfig.localeSubpathOptions.ALL || tldLanguageDetection && !tld) {
       config.correctedUrl = req.url.replace("/".concat(defaultLanguage, "/"), '/');
     }
   }

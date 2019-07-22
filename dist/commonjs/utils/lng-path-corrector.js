@@ -85,9 +85,11 @@ var parseHref = function parseHref(originalHref) {
 var _default = function _default(config, currentRoute, currentLanguage) {
   var defaultLanguage = config.defaultLanguage,
       allLanguages = config.allLanguages,
-      localeSubpaths = config.localeSubpaths;
+      localeSubpaths = config.localeSubpaths,
+      tldLanguageDetection = config.tldLanguageDetection;
   var originalAs = currentRoute.as,
       originalHref = currentRoute.href;
+  var tld = (0, _cookie["default"])(document.cookie, 'tld');
 
   if (!allLanguages.includes(currentLanguage)) {
     throw new Error('Invalid configuration: Current language is not included in all languages array');
@@ -127,9 +129,7 @@ var _default = function _default(config, currentRoute, currentLanguage) {
   }
 
   if (currentLanguage !== defaultLanguage || localeSubpaths === _defaultConfig.localeSubpathOptions.ALL) {
-    var tld = (0, _cookie["default"])(document.cookie, 'tld');
-
-    if (tld && currentLanguage !== tld) {
+    if (!tldLanguageDetection || tldLanguageDetection && currentLanguage !== tld) {
       var basePath = "".concat(href.protocol, "//").concat(href.host);
       var currentAs = as.replace(basePath, '');
       as = "/".concat(currentLanguage).concat(currentAs);

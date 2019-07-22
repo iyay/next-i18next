@@ -43,12 +43,14 @@ export default ((config, currentRoute, currentLanguage) => {
   const {
     defaultLanguage,
     allLanguages,
-    localeSubpaths
+    localeSubpaths,
+    tldLanguageDetection
   } = config;
   const {
     as: originalAs,
     href: originalHref
   } = currentRoute;
+  const tld = getCookie(document.cookie, 'tld');
 
   if (!allLanguages.includes(currentLanguage)) {
     throw new Error('Invalid configuration: Current language is not included in all languages array');
@@ -68,9 +70,7 @@ export default ((config, currentRoute, currentLanguage) => {
   }
 
   if (currentLanguage !== defaultLanguage || localeSubpaths === localeSubpathOptions.ALL) {
-    const tld = getCookie(document.cookie, 'tld');
-
-    if (tld && currentLanguage !== tld) {
+    if (!tldLanguageDetection || tldLanguageDetection && currentLanguage !== tld) {
       const basePath = `${href.protocol}//${href.host}`;
       const currentAs = as.replace(basePath, '');
       as = `/${currentLanguage}${currentAs}`;
