@@ -1,19 +1,19 @@
-import isNode from 'detect-node'
+import isNode from 'detect-node';
 
-export const isServer = isNode && !process.browser
+export const isServer = isNode && !process.browser;
 export const localeSubpathOptions = {
   ALL: 'all',
   FOREIGN: 'foreign',
-  NONE: 'none',
-}
+  NONE: 'none'
+};
 
-const DEFAULT_LANGUAGE = 'en'
-const OTHER_LANGUAGES = []
-const DEFAULT_NAMESPACE = 'common'
-const LOCALE_PATH = 'static/locales'
-const LOCALE_STRUCTURE = '{{lng}}/{{ns}}'
-const LOCALE_EXTENSION = 'json'
-const LOCALE_SUBPATHS = localeSubpathOptions.NONE
+const DEFAULT_LANGUAGE = 'en';
+const OTHER_LANGUAGES = [];
+const DEFAULT_NAMESPACE = 'common';
+const LOCALE_PATH = 'static/locales';
+const LOCALE_STRUCTURE = '{{lng}}/{{ns}}';
+const LOCALE_EXTENSION = 'json';
+const LOCALE_SUBPATHS = localeSubpathOptions.ALL;
 
 const config = {
   defaultLanguage: DEFAULT_LANGUAGE,
@@ -28,7 +28,8 @@ const config = {
   interpolation: {
     escapeValue: false,
     formatSeparator: ',',
-    format: (value, format) => (format === 'uppercase' ? value.toUpperCase() : value),
+    format: (value, format) =>
+      format === 'uppercase' ? value.toUpperCase() : value
   },
   browserLanguageDetection: true,
   serverLanguageDetection: true,
@@ -37,14 +38,14 @@ const config = {
   detection: {
     lookupCookie: 'next-i18next',
     order: ['cookie', 'header', 'querystring'],
-    caches: ['cookie'],
+    caches: ['cookie']
   },
   react: {
     wait: true,
-    useSuspense: false,
+    useSuspense: false
   },
   strictMode: true,
-  errorStackTraceLimit: 0,
-}
+  errorStackTraceLimit: 0
+};
 
-export default config
+export default config;
